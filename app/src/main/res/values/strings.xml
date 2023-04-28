@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">CourseWork</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="logo_image_content_description">logo image</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="sign_in_button_text">Sign In</string>
+    <string name="no_account_sign_up_text_btn">No account? Sign up</string>
+    <string name="liker_text">LIKER</string>
+    <string name="name_hint">Name</string>
+    <string name="add_photo_btn">Add Photo</string>
+    <string name="register_btn">Register</string>
+    <string name="home_btn">Home</string>
+    <string name="account_btn">Person</string>
+    <string name="likes_tv">Likes</string>
+</resources>
