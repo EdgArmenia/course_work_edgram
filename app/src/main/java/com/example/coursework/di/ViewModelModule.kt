@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.coursework.viewmodel.AccountSettingsViewModel
 import com.example.coursework.viewmodel.AccountViewModel
+import com.example.coursework.viewmodel.LikesViewViewModel
 import com.example.coursework.viewmodel.NewPostViewModel
 import com.example.coursework.viewmodel.PostsViewModel
 import com.example.coursework.viewmodel.SignInViewModel
@@ -45,6 +46,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(AccountSettingsViewModel::class)
     internal abstract fun bindAccountSettingsViewModel(accountSettingsViewModel: AccountSettingsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(LikesViewViewModel::class)
+    internal abstract fun bindLikesViewViewModel(likesViewViewModel: LikesViewViewModel): ViewModel
 
     @Binds
     internal abstract fun bindViewModelFactory(factory: ViewModelFactory): ViewModelProvider.Factory

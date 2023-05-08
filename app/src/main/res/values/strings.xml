@@ -14,4 +14,13 @@
     <string name="home_btn">Home</string>
     <string name="account_btn">Person</string>
     <string name="likes_tv">Likes</string>
+    <string name="string_label">Label</string>
+    <string name="add_post">Post</string>
+    <string name="posts_title">Posts</string>
+    <string name="sign_up_title">Sign Up</string>
+    <string name="likes_title">Likes</string>
+    <string name="account_title">Account</string>
+    <string name="edit_btn_text">Edit</string>
+    <string name="posts">Posts</string>
+    <string name="settings_title">Settings</string>
 </resources>

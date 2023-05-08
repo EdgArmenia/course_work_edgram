@@ -1,11 +1,10 @@
 package com.example.coursework.viewmodel
 
 import android.net.ConnectivityManager
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.coursework.model.entity.UserModel
-import com.example.coursework.model.liveuser.MyUser
+import com.example.coursework.model.liveuser.MyAccount
 import com.example.coursework.model.repository.Repository
 import com.example.coursework.utils.error.NetworkException
 import com.example.coursework.utils.error.ServerException
@@ -14,6 +13,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import retrofit2.Response
+import java.net.ProtocolException
 import javax.inject.Inject
 
 @Suppress("DEPRECATION")
@@ -31,11 +31,13 @@ class SignInViewModel @Inject constructor(
             val response = getUser(email, password)
 
             if (response.await().isSuccessful && response.await().body() != null) {
-                MyUser.user.postValue(response.await().body())
+                MyAccount.user.postValue(response.await().body())
                 return true
             } else return false
 
         } catch (e: ServerException) {
+            throw ServerException()
+        } catch (e: ProtocolException) {
             throw ServerException()
         }
     }

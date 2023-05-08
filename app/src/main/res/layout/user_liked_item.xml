@@ -9,7 +9,6 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/button_sign"
         app:cardCornerRadius="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,8 +29,7 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/account_photo"
                     android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:background="@color/black" />
+                    android:layout_height="60dp" />
 
             </androidx.cardview.widget.CardView>
 

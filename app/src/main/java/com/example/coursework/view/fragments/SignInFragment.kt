@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.UiThread
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
@@ -34,7 +35,9 @@ import javax.inject.Inject
 class SignInFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var viewModel: SignInViewModel
+    private val viewModel: SignInViewModel by viewModels {
+        viewModelFactory
+    }
 
     private lateinit var binding: FragmentSignInBinding
 
@@ -42,11 +45,6 @@ class SignInFragment : Fragment() {
         super.onAttach(context)
 
         context.appComponent.injectSignInFragment(this)
-
-        viewModel = ViewModelProviders.of(
-            this@SignInFragment,
-            viewModelFactory
-        )[SignInViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -54,6 +52,9 @@ class SignInFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSignInBinding.inflate(inflater, container, false)
+
+        binding.edTextEmail.setText("edor.merdez@yandex.ru")
+        binding.edTextPassword.setText("1111")
 
         binding.signInBtn.setOnClickListener { signIn() }
         binding.signUpTextBtn.setOnClickListener { navigateToSignUp() }

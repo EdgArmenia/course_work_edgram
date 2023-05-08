@@ -3,6 +3,7 @@ package com.example.coursework.di
 import android.content.Context
 import com.example.coursework.view.fragments.AccountFragment
 import com.example.coursework.view.fragments.AccountSettingsFragment
+import com.example.coursework.view.fragments.LikesViewFragment
 import com.example.coursework.view.fragments.NewPostFragment
 import com.example.coursework.view.fragments.PostsFragment
 import com.example.coursework.view.fragments.SignInFragment
@@ -20,8 +21,9 @@ interface AppComponent {
     fun injectSignUpFragment(fragment: SignUpFragment)
     fun injectPostsFragment(fragment: PostsFragment)
     fun injectNewPostFragment(fragment: NewPostFragment)
-    fun injectAccountFragment(fragment: AccountFragment)
+    fun injectAccountFragment(accountFragment: AccountFragment)
     fun injectAccountSettingsFragment(fragment: AccountSettingsFragment)
+    fun injectLikesViewFragment(fragment: LikesViewFragment)
 
     @Component.Builder
     interface Builder {

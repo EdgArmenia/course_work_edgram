@@ -9,5 +9,16 @@
         android:id="@+id/postsFragment"
         android:name="com.example.coursework.view.fragments.PostsFragment"
         android:label="fragment_posts"
-        tools:layout="@layout/fragment_posts" />
+        tools:layout="@layout/fragment_posts" >
+        <action
+            android:id="@+id/action_postsFragment_to_likesViewFragment"
+            app:destination="@id/likesViewFragment"
+            app:launchSingleTop="false"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/likesViewFragment"
+        android:name="com.example.coursework.view.fragments.LikesViewFragment"
+        android:label="fragment_likes_view"
+        tools:layout="@layout/fragment_likes_view" />
 </navigation>

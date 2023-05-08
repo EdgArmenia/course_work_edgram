@@ -1,20 +1,21 @@
 package com.example.coursework.view.recyclerviews
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.coursework.R
 import com.example.coursework.databinding.UserLikedItemBinding
 import com.example.coursework.model.entity.UserModel
 
-class UsersLikedAdapter(private val users: List<UserModel>, private val context: Context) :
+class UsersLikedAdapter(private val users: List<UserModel>) :
     RecyclerView.Adapter<UsersLikedAdapter.UsersLikedHolder>() {
     class UsersLikedHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val binding = UserLikedItemBinding.bind(itemView)
-        fun bind(user: UserModel, context: Context) = with(binding) {
+        fun bind(user: UserModel) = with(binding) {
             userName.text = user.name
+            Glide.with(itemView).load(user.avatarPhoto).into(accountPhoto)
         }
     }
 
@@ -28,6 +29,6 @@ class UsersLikedAdapter(private val users: List<UserModel>, private val context:
     override fun getItemCount(): Int = users.size
 
     override fun onBindViewHolder(holder: UsersLikedHolder, position: Int) {
-        holder.bind(users[position], context)
+        holder.bind(users[position])
     }
 }

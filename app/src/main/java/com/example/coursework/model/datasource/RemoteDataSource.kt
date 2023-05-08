@@ -4,16 +4,18 @@ import com.example.coursework.model.entity.LikesModel
 import com.example.coursework.model.entity.PostModel
 import com.example.coursework.model.entity.UserModel
 import com.example.coursework.utils.error.ServerException
+import okhttp3.MultipartBody
 import retrofit2.Response
 
 interface RemoteDataSource {
     suspend fun getUser(idUser: Int = 0, email: String, password: Int): Response<UserModel?>
-    suspend fun getPosts(): Response<List<PostModel>>
+    suspend fun getPosts(idUser: Int = 0): Response<List<PostModel>>
     suspend fun getLike(idPost: Int): Response<List<UserModel>>
+    suspend fun getUsersWithLike(): Response<List<LikesModel>>
 
     suspend fun postUser(user: UserModel): Response<Int>
     suspend fun postPost(post: PostModel): Response<Int>
-    suspend fun postLike(like: LikesModel): Response<Int>
+    suspend fun postLike(like: LikesModel): Response<Map<String, String>>
 
     suspend fun putUser(user: UserModel): Response<Int>
     suspend fun putPost(post: PostModel): Response<Int>
@@ -21,6 +23,7 @@ interface RemoteDataSource {
     suspend fun deleteUser(idUser: Int): Response<Int>
     suspend fun deletePost(idPost: Int): Response<Int>
 
+    suspend fun uploadPhoto(photo: MultipartBody.Part): Response<Map<String, String>>
 }
 
 class RemoteDataSourceImpl(private val retrofitService: RetrofitService) : RemoteDataSource {
@@ -32,9 +35,9 @@ class RemoteDataSourceImpl(private val retrofitService: RetrofitService) : Remot
         }
     }
 
-    override suspend fun getPosts(): Response<List<PostModel>> {
+    override suspend fun getPosts(idUser: Int): Response<List<PostModel>> {
         try {
-            return retrofitService.getPosts()
+            return retrofitService.getPosts(idUser)
         } catch (e: ServerException) {
             throw ServerException()
         }
@@ -43,6 +46,14 @@ class RemoteDataSourceImpl(private val retrofitService: RetrofitService) : Remot
     override suspend fun getLike(idPost: Int): Response<List<UserModel>> {
         try {
             return retrofitService.getUsersWithLike(idPost)
+        } catch (e: ServerException) {
+            throw ServerException()
+        }
+    }
+
+    override suspend fun getUsersWithLike(): Response<List<LikesModel>> {
+        try {
+            return retrofitService.getUsersWithLike()
         } catch (e: ServerException) {
             throw ServerException()
         }
@@ -64,7 +75,7 @@ class RemoteDataSourceImpl(private val retrofitService: RetrofitService) : Remot
         }
     }
 
-    override suspend fun postLike(like: LikesModel): Response<Int> {
+    override suspend fun postLike(like: LikesModel): Response<Map<String, String>> {
         try {
             return retrofitService.postLike(like)
         } catch (e: ServerException) {
@@ -99,6 +110,14 @@ class RemoteDataSourceImpl(private val retrofitService: RetrofitService) : Remot
     override suspend fun deletePost(idPost: Int): Response<Int> {
         try {
             return retrofitService.deletePost(idPost)
+        } catch (e: ServerException) {
+            throw ServerException()
+        }
+    }
+
+    override suspend fun uploadPhoto(photo: MultipartBody.Part): Response<Map<String, String>> {
+        try {
+            return retrofitService.uploadPhoto(photo)
         } catch (e: ServerException) {
             throw ServerException()
         }

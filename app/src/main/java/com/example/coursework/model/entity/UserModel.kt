@@ -5,7 +5,7 @@ import java.io.Serializable
 
 data class UserModel(
     @SerializedName("id_user")
-    val idUser: Int? = null,
+    val idUser: Int = 0,
 
     @SerializedName("name")
     val name: String,
@@ -14,7 +14,7 @@ data class UserModel(
     val email: String,
 
     @SerializedName("avatar_photo")
-    val avatarPhoto: String? = null,
+    val avatarPhoto: String,
 
     @SerializedName("password")
     val password: Int

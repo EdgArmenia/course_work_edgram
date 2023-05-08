@@ -5,16 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.coursework.R
 import com.example.coursework.databinding.FragmentMenuBinding
 import com.example.coursework.model.entity.UserModel
+import com.example.coursework.utils.Constants
 
 class MenuFragment : Fragment() {
     private lateinit var binding: FragmentMenuBinding
-    private lateinit var user: UserModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,8 +37,9 @@ class MenuFragment : Fragment() {
         NavigationUI.setupWithNavController(binding.bottomNavView, navController)
 
         binding.addPostBtn.setOnClickListener {
-            findNavController().navigate(R.id.action_menuFragment_to_newPostFragment)
+            findNavController().navigate(R.id.action_menuFragment_to_newPostFragment, bundleOf(
+                Constants.POST_CODE to null, Constants.TO_EDIT_POST to false
+            ))
         }
     }
-
 }
