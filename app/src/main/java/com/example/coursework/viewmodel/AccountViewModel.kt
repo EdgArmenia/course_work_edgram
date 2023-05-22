@@ -12,6 +12,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import java.lang.NullPointerException
 import java.lang.RuntimeException
 import java.net.ProtocolException
@@ -22,26 +23,36 @@ class AccountViewModel @Inject constructor(private val repository: Repository) :
 
     fun getPosts() {
         viewModelScope.launch(Dispatchers.IO) {
-            val postsResponse = async { repository.getPosts(MyAccount.user.value!!.idUser) }
-            val likesResponse = async { repository.getUsersWithLike() }
+            val postsResponse = async { withTimeout(1500L) { repository.getPosts(MyAccount.user.value!!.idUser) } }
+            val likesResponse = async { withTimeout(1500L) { repository.getLikes(MyAccount.user.value!!.idUser) } }
 
             if (postsResponse.await().isSuccessful && likesResponse.await().isSuccessful) {
                 try {
                     postsAndLikes.postValue(
                         PostAndLikesData(
-                            postsResponse.await().body()!!, likesResponse.await().body()!!
+                            postsResponse.await().body()!!.toMutableList(),
+                            likesResponse.await().body()!!.toMutableList()
                         )
                     )
                 } catch (e: NullPointerException) {
                     throw CancellationException("Live data error")
+                } catch (e: ProtocolException) {
+                    throw ServerException()
                 }
             }
         }
     }
 
-    suspend fun postLike(id_post: Int): String {
+    suspend fun postLike(idPost: Int): String {
         try {
-            val response = repository.postLike(LikesModel(MyAccount.user.value?.idUser!!, id_post))
+            val response = withTimeout(1500L) {
+                repository.postLike(
+                    LikesModel(
+                        MyAccount.user.value?.idUser!!,
+                        idPost
+                    )
+                )
+            }
 
             if (response.isSuccessful) {
                 return response.body()!!["status"]!!
@@ -53,20 +64,36 @@ class AccountViewModel @Inject constructor(private val repository: Repository) :
         }
     }
 
-    suspend fun deletePost(id_post: Int): Boolean {
+    suspend fun deletePost(idPost: Int): Boolean {
         try {
-            val response = repository.deletePost(id_post)
+            val response = withTimeout(1500L) { repository.deletePost(idPost) }
 
             if (response.isSuccessful) {
-                if (response.body() == 1)
+                if (response.body() == 1) {
+                    deletePostInLiveData(idPost)
                     return true
-                else if(response.body() == -1)
+                } else if (response.body() == -1)
                     return false
             } else throw ServerException()
         } catch (e: ServerException) {
             throw ServerException()
+        } catch (e: ProtocolException) {
+            throw ServerException()
         }
         throw RuntimeException()
+    }
+
+    private fun deletePostInLiveData(idPost: Int) {
+        val index = findIndex(idPost)
+        postsAndLikes.value?.posts?.removeAt(index)
+    }
+
+    private fun findIndex(idPost: Int): Int {
+        for (post in postsAndLikes.value?.posts!!) {
+            if (post.idPost == idPost)
+                return postsAndLikes.value?.posts!!.indexOf(post)
+        }
+        return 0
     }
 
     fun countLikes(): Int {

@@ -10,8 +10,8 @@ import retrofit2.Response
 interface RemoteDataSource {
     suspend fun getUser(idUser: Int = 0, email: String, password: Int): Response<UserModel?>
     suspend fun getPosts(idUser: Int = 0): Response<List<PostModel>>
-    suspend fun getLike(idPost: Int): Response<List<UserModel>>
-    suspend fun getUsersWithLike(): Response<List<LikesModel>>
+    suspend fun getUsersWithLike(idPost: Int): Response<List<UserModel>>
+    suspend fun getLikes(idUser: Int = 0): Response<List<LikesModel>>
 
     suspend fun postUser(user: UserModel): Response<Int>
     suspend fun postPost(post: PostModel): Response<Int>
@@ -43,7 +43,7 @@ class RemoteDataSourceImpl(private val retrofitService: RetrofitService) : Remot
         }
     }
 
-    override suspend fun getLike(idPost: Int): Response<List<UserModel>> {
+    override suspend fun getUsersWithLike(idPost: Int): Response<List<UserModel>> {
         try {
             return retrofitService.getUsersWithLike(idPost)
         } catch (e: ServerException) {
@@ -51,9 +51,9 @@ class RemoteDataSourceImpl(private val retrofitService: RetrofitService) : Remot
         }
     }
 
-    override suspend fun getUsersWithLike(): Response<List<LikesModel>> {
+    override suspend fun getLikes(idUser: Int): Response<List<LikesModel>> {
         try {
-            return retrofitService.getUsersWithLike()
+            return retrofitService.getLikes(idUser)
         } catch (e: ServerException) {
             throw ServerException()
         }

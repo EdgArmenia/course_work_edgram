@@ -2,48 +2,35 @@ package com.example.coursework.view.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.UiThread
-import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.coursework.R
 import com.example.coursework.appComponent
 import com.example.coursework.databinding.FragmentSignInBinding
 import com.example.coursework.utils.Constants
-import com.example.coursework.utils.error.EntityException
 import com.example.coursework.utils.error.NetworkException
 import com.example.coursework.utils.error.ServerException
-import com.example.coursework.utils.error.SuccessException
 import com.example.coursework.utils.error.ValidateException
-import com.example.coursework.utils.toast
+import com.example.coursework.utils.extensions.toast
 import com.example.coursework.viewmodel.SignInViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SignInFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModel: SignInViewModel by viewModels {
-        viewModelFactory
-    }
+    private val viewModel: SignInViewModel by viewModels { viewModelFactory }
 
     private lateinit var binding: FragmentSignInBinding
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
         context.appComponent.injectSignInFragment(this)
     }
 
@@ -52,9 +39,6 @@ class SignInFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSignInBinding.inflate(inflater, container, false)
-
-        binding.edTextEmail.setText("edor.merdez@yandex.ru")
-        binding.edTextPassword.setText("1111")
 
         binding.signInBtn.setOnClickListener { signIn() }
         binding.signUpTextBtn.setOnClickListener { navigateToSignUp() }

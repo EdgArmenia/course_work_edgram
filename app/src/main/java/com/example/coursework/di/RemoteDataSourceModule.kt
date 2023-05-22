@@ -6,7 +6,9 @@ import com.example.coursework.model.datasource.RetrofitService
 import com.example.coursework.utils.Constants
 import dagger.Module
 import dagger.Provides
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -19,7 +21,7 @@ class RemoteDataSourceModule {
     @Provides
     @Singleton
     fun provideRemoteDataSource(retrofitService: RetrofitService): RemoteDataSource =
-        RemoteDataSourceImpl(retrofitService=retrofitService)
+        RemoteDataSourceImpl(retrofitService = retrofitService)
 
     @Provides
     @Singleton
@@ -33,6 +35,12 @@ class RemoteDataSourceModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
+        .addNetworkInterceptor(Interceptor { chain ->
+            val request = chain.request().newBuilder()
+                .addHeader("Connection", "close")
+                .build()
+            chain.proceed(request)
+        })
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
         .connectTimeout(5, TimeUnit.MINUTES)
         .writeTimeout(5, TimeUnit.MINUTES)

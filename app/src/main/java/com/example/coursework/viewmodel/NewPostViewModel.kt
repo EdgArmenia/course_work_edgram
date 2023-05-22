@@ -15,6 +15,7 @@ import com.example.coursework.utils.error.ServerException
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withTimeout
 import retrofit2.Response
 import java.lang.IllegalStateException
 import java.lang.NullPointerException
@@ -76,12 +77,16 @@ class NewPostViewModel @Inject constructor(private val repository: Repository) :
                         return request()
                     } catch (e: ServerException) {
                         throw ServerException()
+                    } catch (e: ProtocolException) {
+                        throw ServerException()
                     }
                 } else throw ServerException()
             } else {
                 try {
                     return request()
                 } catch (e: ServerException) {
+                    throw ServerException()
+                } catch (e: ProtocolException) {
                     throw ServerException()
                 }
             }
@@ -96,7 +101,7 @@ class NewPostViewModel @Inject constructor(private val repository: Repository) :
         query: suspend () -> Response<Int>
     ): Deferred<Response<Int>> {
         return viewModelScope.async(Dispatchers.IO) {
-            query()
+            withTimeout(1500L) { query() }
         }
     }
 
@@ -104,7 +109,7 @@ class NewPostViewModel @Inject constructor(private val repository: Repository) :
         query: suspend () -> Response<Map<String, String>>
     ): Deferred<Response<Map<String, String>>> {
         return viewModelScope.async(Dispatchers.IO) {
-            query()
+            withTimeout(1500L) { query() }
         }
     }
 
@@ -112,16 +117,17 @@ class NewPostViewModel @Inject constructor(private val repository: Repository) :
         val imageUrl: String = Constants.IMAGE_URL + fileName
 
         val response = requestPost {
-            repository.postPost(
-                PostModel(
-                    label = label,
-                    photo = imageUrl,
-                    date = currentDate,
-                    idUser = MyAccount.user.value?.idUser!!,
+            withTimeout(1500L) {
+                repository.postPost(
+                    PostModel(
+                        label = label,
+                        photo = imageUrl,
+                        date = currentDate,
+                        idUser = MyAccount.user.value?.idUser!!,
+                    )
                 )
-            )
+            }
         }
-//            postPost(label, imageUrl, currentDate)
 
         if (response.await().isSuccessful) {
             if (response.await().body() == 1)
@@ -137,17 +143,18 @@ class NewPostViewModel @Inject constructor(private val repository: Repository) :
         val imageUrl: String = Constants.IMAGE_URL + fileName
 
         val response = requestPost {
-            repository.putPost(
-                PostModel(
-                    label = label,
-                    photo = imageUrl,
-                    idUser = MyAccount.user.value?.idUser!!,
-                    date = currentDate,
-                    idPost = post.value!!.idPost
+            withTimeout(1500L) {
+                repository.putPost(
+                    PostModel(
+                        label = label,
+                        photo = imageUrl,
+                        idUser = MyAccount.user.value?.idUser!!,
+                        date = currentDate,
+                        idPost = post.value!!.idPost
+                    )
                 )
-            )
+            }
         }
-//            putPost(label, imageUrl, currentDate)
 
         if (response.await().isSuccessful) {
             if (response.await().body() == 1)

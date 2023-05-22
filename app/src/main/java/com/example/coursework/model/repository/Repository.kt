@@ -11,8 +11,8 @@ import retrofit2.Response
 interface Repository {
     suspend fun getUser(idUser: Int = 0, email: String, password: Int): Response<UserModel?>
     suspend fun getPosts(idUser: Int = 0): Response<List<PostModel>>
-    suspend fun getLike(idPost: Int): Response<List<UserModel>>
-    suspend fun getUsersWithLike(): Response<List<LikesModel>>
+    suspend fun getUsersWithLike(idPost: Int): Response<List<UserModel>>
+    suspend fun getLikes(idUser: Int = 0): Response<List<LikesModel>>
 
 
     suspend fun postUser(user: UserModel): Response<Int>
@@ -45,17 +45,17 @@ class RepositoryImpl(private val remoteDataSource: RemoteDataSource) : Repositor
         }
     }
 
-    override suspend fun getLike(idPost: Int): Response<List<UserModel>> {
+    override suspend fun getUsersWithLike(idPost: Int): Response<List<UserModel>> {
         try {
-            return remoteDataSource.getLike(idPost)
+            return remoteDataSource.getUsersWithLike(idPost)
         } catch (e: ServerException) {
             throw ServerException()
         }
     }
 
-    override suspend fun getUsersWithLike(): Response<List<LikesModel>> {
+    override suspend fun getLikes(idUser: Int): Response<List<LikesModel>> {
         try {
-            return remoteDataSource.getUsersWithLike()
+            return remoteDataSource.getLikes(idUser)
         } catch (e: ServerException) {
             throw ServerException()
         }

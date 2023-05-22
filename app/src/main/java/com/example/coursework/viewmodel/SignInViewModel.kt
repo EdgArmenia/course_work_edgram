@@ -12,6 +12,7 @@ import com.example.coursework.utils.error.ValidateException
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withTimeout
 import retrofit2.Response
 import java.net.ProtocolException
 import javax.inject.Inject
@@ -25,13 +26,14 @@ class SignInViewModel @Inject constructor(
     suspend fun signIn(email: String, password: String): Boolean {
         if (!isConnected()) throw NetworkException()
 
-        if (isNotValid(email) || isNotValid(password)) throw ValidateException()
+        if (isNotValidEmail(email) || isNotValid(password)) throw ValidateException()
 
         try {
-            val response = getUser(email, password)
+            val response =
+                request { repository.getUser(email = email, password = password.toInt()) }
 
             if (response.await().isSuccessful && response.await().body() != null) {
-                MyAccount.user.postValue(response.await().body())
+                MyAccount.user.value = response.await().body()
                 return true
             } else return false
 
@@ -42,9 +44,9 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    private fun getUser(email: String, password: String): Deferred<Response<UserModel?>> {
+    private fun request(query: suspend () -> Response<UserModel?>): Deferred<Response<UserModel?>> {
         return viewModelScope.async(Dispatchers.IO) {
-            repository.getUser(email = email, password = password.toInt())
+            withTimeout(1500L) { query() }
         }
     }
 
@@ -53,4 +55,8 @@ class SignInViewModel @Inject constructor(
     }
 
     private fun isNotValid(data: String): Boolean = data.isEmpty()
+
+    private fun isNotValidEmail(data: String): Boolean =
+        !("@mail.ru" in data || "@gmail.com" in data || "@yandex.ru" in data || "@ya.ru" in data)
+
 }

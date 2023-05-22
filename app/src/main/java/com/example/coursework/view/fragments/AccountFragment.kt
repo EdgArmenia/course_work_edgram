@@ -1,7 +1,10 @@
 package com.example.coursework.view.fragments
 
 import android.content.Context
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +17,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.coursework.MainActivity
 import com.example.coursework.R
 import com.example.coursework.appComponent
 import com.example.coursework.databinding.FragmentAccountBinding
@@ -22,7 +26,9 @@ import com.example.coursework.model.entity.PostModel
 import com.example.coursework.model.liveuser.MyAccount
 import com.example.coursework.utils.Constants
 import com.example.coursework.utils.PostAndLikesData
-import com.example.coursework.utils.toast
+import com.example.coursework.utils.error.ServerException
+import com.example.coursework.utils.extensions.findTopNavController
+import com.example.coursework.utils.extensions.toast
 import com.example.coursework.view.contracts.AccountPostListener
 import com.example.coursework.view.recyclerviews.PostsAdapter
 import com.example.coursework.viewmodel.AccountViewModel
@@ -96,7 +102,7 @@ class AccountFragment : Fragment(), AccountPostListener {
 
     override fun onClickEditPost(post: PostModel) {
         findNavController().navigate(
-            R.id.action_accountFragment_to_newPostFragment2,
+            R.id.action_accountFragment_to_newPostFragment,
             bundleOf(Constants.POST_CODE to post, Constants.TO_EDIT_POST to true)
         )
     }
@@ -104,7 +110,7 @@ class AccountFragment : Fragment(), AccountPostListener {
     override fun onClickShowUsersLiked(post: PostModel) {
         if (post.likes != 0)
             findNavController().navigate(
-                R.id.action_accountFragment_to_likesViewFragment2,
+                R.id.action_accountFragment_to_likesViewFragment,
                 bundleOf(Constants.POST_CODE to post)
             )
         else requireContext().toast(Constants.NO_LIKES)
@@ -113,17 +119,23 @@ class AccountFragment : Fragment(), AccountPostListener {
     override fun onClickLike(idPost: Int) {
         val likeButton = requireActivity().findViewById<ImageButton>(R.id.like_button)
         lifecycleScope.launch(Dispatchers.IO) {
-            val status = async { viewModel.postLike(idPost) }
+            try {
+                val status = async { viewModel.postLike(idPost) }
 
-            when (status.await()) {
-                "liked" -> setLike(likeButton, R.drawable.like_filled)
-                "unliked" -> setLike(likeButton, R.drawable.like_no_filled)
+                when (status.await()) {
+                    "liked" -> setLike(likeButton, R.drawable.like_filled)
+                    "unliked" -> setLike(likeButton, R.drawable.like_no_filled)
+                }
+            } catch (e: ServerException) {
+                requireActivity().runOnUiThread {
+                    requireContext().toast("Something went wrong, but liked successfully")
+                }
             }
         }
     }
 
     private fun exitFromAccount() {
-        findNavController().navigate(R.id.action_accountFragment_to_signInFragment2)
+        findTopNavController().navigate(R.id.action_menuFragment_to_signInFragment)
     }
 
     private fun openAccountSetting() {

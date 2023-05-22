@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.CourseWork" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
+    <style name="Theme.CourseWork" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/day_main_color</item>
         <item name="colorPrimaryVariant">@color/white</item>

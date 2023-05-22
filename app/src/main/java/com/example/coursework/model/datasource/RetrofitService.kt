@@ -28,9 +28,9 @@ interface RetrofitService {
     @Headers("Content-Type: application/json")
     suspend fun getUsersWithLike(@Path("id_post") idPost: Int): Response<List<UserModel>>
 
-    @GET("likes")
+    @GET("likes_check/{id_user}")
     @Headers("Content-Type: application/json")
-    suspend fun getUsersWithLike(): Response<List<LikesModel>>
+    suspend fun getLikes(@Path("id_user") idUser: Int = 0): Response<List<LikesModel>>
 
     @POST("user/0/0/0")
     suspend fun postUser(@Body user: UserModel): Response<Int>

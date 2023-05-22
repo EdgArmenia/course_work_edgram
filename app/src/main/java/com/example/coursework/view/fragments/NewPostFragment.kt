@@ -2,7 +2,6 @@ package com.example.coursework.view.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log.d
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,6 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -20,7 +18,7 @@ import com.example.coursework.databinding.FragmentNewPostBinding
 import com.example.coursework.model.entity.PostModel
 import com.example.coursework.utils.Constants
 import com.example.coursework.utils.error.ServerException
-import com.example.coursework.utils.toast
+import com.example.coursework.utils.extensions.toast
 import com.example.coursework.viewmodel.NewPostViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

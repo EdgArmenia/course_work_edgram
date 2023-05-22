@@ -25,9 +25,7 @@ class LikesViewFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModel: LikesViewViewModel by viewModels {
-        viewModelFactory
-    }
+    private val viewModel: LikesViewViewModel by viewModels { viewModelFactory }
     private lateinit var binding: FragmentLikesViewBinding
 
     override fun onAttach(context: Context) {

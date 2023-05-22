@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/name_hint"
         android:maxLines="1"
+        android:inputType="text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -37,6 +38,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/email_hint"
         android:maxLines="1"
+        android:inputType="textEmailAddress"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
@@ -60,8 +62,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         app:cardCornerRadius="100dp"
         app:layout_constraintBottom_toTopOf="@+id/ed_text_name"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,8 +74,8 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:layout_constraintBottom_toTopOf="@+id/ed_text_name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"

@@ -20,11 +20,15 @@ class PostsAdapter(
     private val listener: Any,
     private val editable: Boolean = false
 ) : RecyclerView.Adapter<PostsAdapter.PostsHolder>() {
-    class PostsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class PostsHolder(
+        itemView: View,
+        private val listener: Any,
+        private val editable: Boolean,
+    ) : RecyclerView.ViewHolder(itemView) {
         private val binding = PostItemBinding.bind(itemView)
 
         @SuppressLint("SetTextI18n")
-        fun bind(post: PostModel, likes: List<LikesModel>, listener: Any, editable: Boolean) =
+        fun bind(post: PostModel, likes: List<LikesModel>) =
             with(binding) {
                 var liked: Boolean
                 userName.text = post.name
@@ -34,7 +38,7 @@ class PostsAdapter(
                 Glide.with(itemView).load(post.avatarPhoto).into(accountPhoto)
                 Glide.with(itemView).load(post.photo).into(postPhoto)
 
-                if (LikesModel(MyAccount.user.value?.idUser!!, post.idPost!!) in likes) {
+                if (LikesModel(MyAccount.user.value?.idUser!!, post.idPost) in likes) {
                     binding.likeButton.setBackgroundResource(R.drawable.like_filled)
                     liked = true
                 } else {
@@ -100,12 +104,12 @@ class PostsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostsHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.post_item, parent, false)
 
-        return PostsHolder(view)
+        return PostsHolder(view, listener, editable)
     }
 
     override fun getItemCount(): Int = posts.size
 
     override fun onBindViewHolder(holder: PostsHolder, position: Int) {
-        holder.bind(posts[position], likes, listener, editable)
+        holder.bind(posts[position], likes)
     }
 }

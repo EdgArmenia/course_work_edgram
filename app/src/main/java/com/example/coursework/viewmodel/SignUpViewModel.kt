@@ -2,6 +2,7 @@ package com.example.coursework.viewmodel
 
 import android.content.ContentResolver
 import android.net.Uri
+import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,6 +15,7 @@ import com.example.coursework.utils.error.ValidateException
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withTimeout
 import okhttp3.MultipartBody
 import retrofit2.Response
 import java.lang.IllegalStateException
@@ -30,16 +32,13 @@ class SignUpViewModel @Inject constructor(private val repository: Repository) : 
 
                 if (uploadPhoto(image, fileName))
                     return postRequest(fileName, name, email, password)
-
                 else throw ServerException()
             } catch (e: ServerException) {
                 throw ServerException()
             } catch (e: ProtocolException) {
                 throw ServerException()
             }
-        } else {
-            throw ValidateException()
-        }
+        } else throw ValidateException()
     }
 
     private suspend fun postRequest(
@@ -62,6 +61,8 @@ class SignUpViewModel @Inject constructor(private val repository: Repository) : 
             } else throw ServerException()
         } catch (e: ServerException) {
             throw ServerException()
+        } catch (e: ProtocolException) {
+            throw ServerException()
         }
         return false
     }
@@ -73,11 +74,13 @@ class SignUpViewModel @Inject constructor(private val repository: Repository) : 
         image: String
     ): Deferred<Response<Int>> {
         return viewModelScope.async(Dispatchers.IO) {
-            repository.postUser(
-                UserModel(
-                    name = name, email = email, password = password.toInt(), avatarPhoto = image
+            withTimeout(1500L) {
+                repository.postUser(
+                    UserModel(
+                        name = name, email = email, password = password.toInt(), avatarPhoto = image
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -101,7 +104,7 @@ class SignUpViewModel @Inject constructor(private val repository: Repository) : 
         photo: MultipartBody.Part
     ): Deferred<Response<Map<String, String>>> {
         return viewModelScope.async(Dispatchers.IO) {
-            repository.uploadPhoto(photo)
+            withTimeout(1500L) { repository.uploadPhoto(photo) }
         }
     }
 
@@ -113,9 +116,8 @@ class SignUpViewModel @Inject constructor(private val repository: Repository) : 
         return data.isNotEmpty()
     }
 
-    private fun validateEmail(email: String): Boolean {
-        return "@" in email
-    }
+    private fun validateEmail(email: String): Boolean =
+        "@mail.ru" in email || "@gmail.com" in email || "@yandex.ru" in email || "@ya.ru" in email
 
     fun openFile(contentResolver: ContentResolver): ByteArray {
         if (imageUri.value == null) {
@@ -157,7 +159,6 @@ class SignUpViewModel @Inject constructor(private val repository: Repository) : 
 //                        else if (response.await().body() == -1)
 //                            return false
 //                    } else throw ServerException()
-
 
 
 //            viewModelScope.launch(Dispatchers.IO) {

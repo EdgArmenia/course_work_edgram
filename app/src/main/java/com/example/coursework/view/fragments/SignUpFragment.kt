@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.coursework.R
@@ -18,20 +17,17 @@ import com.example.coursework.databinding.FragmentSignUpBinding
 import com.example.coursework.utils.Constants
 import com.example.coursework.utils.error.ServerException
 import com.example.coursework.utils.error.ValidateException
-import com.example.coursework.utils.toast
+import com.example.coursework.utils.extensions.toast
 import com.example.coursework.viewmodel.SignUpViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.net.ProtocolException
 import javax.inject.Inject
 import kotlin.Exception
 
 class SignUpFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModel: SignUpViewModel by viewModels {
-        viewModelFactory
-    }
+    private val viewModel: SignUpViewModel by viewModels { viewModelFactory }
 
     private lateinit var binding: FragmentSignUpBinding
     private val launcher =
@@ -46,7 +42,6 @@ class SignUpFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
         context.appComponent.injectSignUpFragment(this)
     }
 
@@ -83,8 +78,10 @@ class SignUpFragment : Fragment() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 if (viewModel.signUp(name, email, password, image)) {
-                    requireContext().toast("Successfully")
-                    findNavController().popBackStack()
+                    requireActivity().runOnUiThread {
+                        requireContext().toast("Successfully")
+                        findNavController().popBackStack()
+                    }
                 } else {
                     requireActivity().runOnUiThread {
                         requireContext().toast("Operation failed...")
