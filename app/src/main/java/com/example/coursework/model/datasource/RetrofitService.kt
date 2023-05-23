@@ -18,7 +18,11 @@ import retrofit2.http.Path
 interface RetrofitService {
     @GET("user/{id_user}/{email}/{password}")
     @Headers("Content-Type: application/json")
-    suspend fun getUser(@Path("id_user") id_user: Int = 0, @Path("email") email: String = "", @Path("password") password: Int = 0): Response<UserModel?>
+    suspend fun getUser(
+        @Path("id_user") id_user: Int = 0,
+        @Path("email") email: String = "",
+        @Path("password") password: Int = 0
+    ): Response<UserModel?>
 
     @GET("post/{id_user}")
     @Headers("Content-Type: application/json")
